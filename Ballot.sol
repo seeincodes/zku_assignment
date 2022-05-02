@@ -27,12 +27,15 @@ contract Ballot {
     mapping(address => Voter) public voters;
 
     Proposal[] public proposals;
+    uint256 startTime; // contract deployment time
 
     /** 
      * @dev Create a new ballot to choose one of 'proposalNames'.
      * @param proposalNames names of proposals
      */
     constructor(bytes32[] memory proposalNames) {
+        startTime = block.timestamp;
+
         chairperson = msg.sender;
         voters[chairperson].weight = 1;
 
@@ -45,6 +48,14 @@ contract Ballot {
                 voteCount: 0
             }));
         }
+    }
+
+    modifier voteEnded() { // Modifier
+        require(
+            block.timestamp < startTime + 5 minutes,
+            "Voting period exceeded"
+        );
+        _;
     }
     
     /** 
@@ -97,14 +108,14 @@ contract Ballot {
      * @dev Give your vote (including votes delegated to you) to proposal 'proposals[proposal].name'.
      * @param proposal index of proposal in the proposals array
      */
-    function vote(uint proposal) public {
+    function vote(uint proposal) public voteEnded{
         Voter storage sender = voters[msg.sender];
         require(sender.weight != 0, "Has no right to vote");
         require(!sender.voted, "Already voted.");
         sender.voted = true;
         sender.vote = proposal;
 
-        var sta
+    
         // If 'proposal' is out of the range of the array,
         // this will throw automatically and revert all
         // changes.

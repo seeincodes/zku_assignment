@@ -3,18 +3,18 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 /** 
- * @title Practice
+ * @title HelloWorld
  * @dev Practice writing Solidity Code
  */
 
  contract HelloWorld {
 
-     uint number;
-     function storeNumber(uint number) {
-         this.number = number;
+     uint256 number;
+     function storeNumber(uint256 num) public {
+         number = num;
      }
 
-     function retrieveNumber() returns (uint){
+     function retrieveNumber() public returns (uint256){
          return number;
      }
  }
